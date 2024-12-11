@@ -1,3 +1,28 @@
+const getRandomInt = (min, max) => {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // 최댓값은 제외, 최솟값은 포함
+};
+
+const drawArc = ($canvas, time, colorArr) => {
+  const ctx = $canvas.getContext('2d');
+  const colors = colorArr;
+
+  for (let i = 0; i <= time; i++) {
+    const colorRandom = getRandomInt(0 ,colors.length - 1);
+    const posXRandom = getRandomInt(0 ,$canvas.width);
+    const posYRandom = getRandomInt(0 ,$canvas.height);
+    const arcSize = getRandomInt(0 ,70);
+    const lineWidth = getRandomInt(0 ,30);
+
+    ctx.beginPath();
+    ctx.arc(posXRandom, posYRandom, arcSize, 0, Math.PI * 2, false);
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = colors[colorRandom];
+    ctx.stroke();
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const $canvas = document.querySelector('canvas');
 
@@ -31,11 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
   ctx.moveTo(200, 100);
   ctx.lineTo(400, 300);
   ctx.stroke(); //그리기
-  
-  ctx.beginPath();
-  ctx.arc(300, 300, 40, 0, Math.PI * 2, false);
-  ctx.strokeStyle = "#5d9358"
-  ctx.stroke();
+
+  const colorPalette = ['#ed5db6' ,'#ed5d5d','#edb85d','#deed5d','#6bed5d','#5deaed','#835ded','#835ded','#5dedb8','#8dc769'];
+
+  drawArc($canvas,100,colorPalette);
 
   window.addEventListener('resize', () => {
     clearTimeout(canvasEventTimer);
