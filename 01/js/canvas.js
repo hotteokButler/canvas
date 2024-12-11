@@ -3,11 +3,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let canvasWidth = window.innerWidth - 2;
   let canvasHeight = window.innerHeight - 2;
+  let canvasEventTimer;
 
+  // width heignt 설정
   $canvas.width = canvasWidth;
   $canvas.height = canvasHeight;
 
-  let canvasEventTimer;
+  const ctx = $canvas.getContext("2d");
+
+  ctx.fillRect(100,100,150,150);
+  ctx.fillRect(570,0,150,150);
+  ctx.fillRect(400,300,150,150);
+  ctx.fillRect(60,400,150,150);
+
 
   window.addEventListener('resize', () => {
     clearTimeout(canvasEventTimer);
@@ -20,4 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }, 300);
   });
+
+
 });
