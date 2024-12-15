@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animation.initData('canvas', $arcData);
   animation.startPoint = 0;
   animation.performAnimation(0,100, () => {
+    animation.arcData.posY = animation.startPoint;
     drawArc(animation.canvas, animation.arcData);
   });
 });
