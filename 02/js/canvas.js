@@ -13,6 +13,7 @@ const getRandomInt = (min, max) => {
  */
 const drawArc = ($canvas, $arcData) => {
   const ctx = $canvas.getContext('2d');
+  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
   ctx.beginPath();
   ctx.arc(
     $arcData.posX ?? 0,
@@ -44,8 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     startAngle: 0,
   };
 
-  drawArc($canvas, $arcData);
   const animation = new Animation();
-
-  animation.testLog('test_log');
+  animation.initData('canvas', $arcData);
+  animation.startPoint = 0;
+  animation.performAnimation(0,100, () => {
+    drawArc(animation.canvas, animation.arcData);
+  });
 });
