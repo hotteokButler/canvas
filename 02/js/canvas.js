@@ -1,3 +1,5 @@
+import { Animation } from './animation.js';
+
 const getRandomInt = (min, max) => {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
@@ -17,7 +19,7 @@ const drawArc = ($canvas, $arcData) => {
     $arcData.posY ?? 0,
     $arcData.radius ?? 50,
     $arcData.startAngle ?? 0,
-    $arcData.endAngle ?? (Math.PI *2) ,
+    $arcData.endAngle ?? Math.PI * 2,
     $arcData.counterClockWise ?? false
   );
   ctx.lineWidth = $arcData.lineWidth ?? 1;
@@ -30,13 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
-  let canvasEventTimer;
 
   // width heignt 설정
   $canvas.width = canvasWidth;
   $canvas.height = canvasHeight;
-
-  const ctx = $canvas.getContext('2d');
 
   const $arcData = {
     posX: 200,
@@ -46,4 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   drawArc($canvas, $arcData);
+  const animation = new Animation();
+
+  animation.testLog('test_log');
 });
