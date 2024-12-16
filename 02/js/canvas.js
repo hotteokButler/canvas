@@ -1,5 +1,3 @@
-import { Animation } from './animation.js';
-
 const getRandomInt = (min, max) => {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
@@ -25,6 +23,8 @@ const drawArc = ($canvas, $arcData) => {
   );
   ctx.lineWidth = $arcData.lineWidth ?? 1;
   ctx.strokeStyle = $arcData.color ?? '#232323';
+  ctx.fillStyle = $arcData.color ?? '#232323';
+  ctx.fill();
   ctx.stroke();
 };
 
@@ -33,23 +33,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
+  let animationRef;
 
   // width heignt 설정
   $canvas.width = canvasWidth;
   $canvas.height = canvasHeight;
 
-  const $arcData = {
+  const arcData = {
     posX: 200,
     posY: 200,
     radius: 30,
+    color: 'tomato',
     startAngle: 0,
   };
 
-  const animation = new Animation();
-  animation.initData('canvas', $arcData);
-  animation.startPoint = 0;
-  animation.performAnimation(0,100, () => {
-    animation.arcData.posY = animation.startPoint;
-    drawArc(animation.canvas, animation.arcData);
-  });
+  // frame 속도
+  let dx = 4;
+  let dy = 4;
+
+  const performance = (canvas, data) => {
+    animationRef = requestAnimationFrame(() => {
+      performance(canvas, data);
+    });
+    drawArc(canvas, data);
+
+    if (
+      data.posX + data.radius > canvas.width || // canvas 우측 화면 닿으면 -방향
+      data.posX - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
+    ) {
+      dx = -dx; // 방향 반전
+    }
+    if (
+      data.posY + data.radius > canvas.height || // canvas 우측 화면 닿으면 -방향
+      data.posY - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
+    ) {
+      dy = -dy; // 방향 반전
+    }
+
+    data.posX += dx;
+    data.posY += dy;
+    //stop
+    // if (breakpoint) {
+    //   cancelAnimationFrame();
+    //   return;
+    // }
+  };
+
+  performance($canvas, arcData);
 });

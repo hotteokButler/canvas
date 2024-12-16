@@ -14,6 +14,7 @@ export class Animation {
     };
     this.startPoint = 0;
     this.breakPoint;
+    this.isReverse = false;
   }
 
   testLog() {
@@ -41,11 +42,13 @@ export class Animation {
       this.animationRef = requestAnimationFrame(go);
       animationCallbackFn(); // 실행할 함수
 
-      this.startPoint += 1; 
-      this.arcData.posX = this.startPoint;
-      
+      if (!this.isReverse) {
+        this.startPoint += 1;
+      } else {
+        this.startPoint -= 1;
+      }
       //stop
-      if(this.startPoint > this.breakPoint) {
+      if (this.startPoint > this.breakPoint) {
         cancelAnimationFrame(this.animationRef);
         return;
       }
