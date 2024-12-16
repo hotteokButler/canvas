@@ -5,13 +5,22 @@ const getRandomInt = (min, max) => {
 };
 
 /**
+ * canvas 초기화
+ * @param {*} $canvas canvas elem
+ */
+const clearCanvas = ($canvas) => {
+  const ctx = $canvas.getContext('2d');
+  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+};
+
+/**
  * canvas 원 그리기
  * @param {*} $canvas canvas elem
  * @param {*} $arcData 그릴 원 데이터 object
  */
 const drawArc = ($canvas, $arcData) => {
   const ctx = $canvas.getContext('2d');
-  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+  clearCanvas($canvas);
   ctx.beginPath();
   ctx.arc(
     $arcData.posX ?? 0,
@@ -74,10 +83,24 @@ document.addEventListener('DOMContentLoaded', () => {
     data.posY += dy;
     //stop
     // if (breakpoint) {
-    //   cancelAnimationFrame();
+    //   cancelAnimationFrame(animationRef);
     //   return;
     // }
   };
 
   performance($canvas, arcData);
+
+  let canvasEventTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(canvasEventTimer);
+    cancelAnimationFrame(animationRef);
+    canvasEventTimer = setTimeout(() => {
+      canvasWidth = window.innerWidth - 2;
+      canvasHeight = window.innerHeight - 2;
+
+      $canvas.width = canvasWidth;
+      $canvas.height = canvasHeight;
+      performance($canvas, arcData);
+    }, 300);
+  });
 });
