@@ -49,38 +49,36 @@ document.addEventListener('DOMContentLoaded', () => {
   $canvas.height = canvasHeight;
 
   const arcData = {
-    posX: 200,
-    posY: 200,
+    posX: Math.floor(Math.random() * canvasWidth),
+    posY: Math.floor(Math.random() * canvasHeight),
     radius: 30,
     color: 'tomato',
     startAngle: 0,
+    // frame 속도
+    dx: (Math.random() - 0.5) * 12,
+    dy: (Math.random() - 0.5) * 12,
   };
-
-  // frame 속도
-  let dx = 4;
-  let dy = 4;
 
   const performance = (canvas, data) => {
     animationRef = requestAnimationFrame(() => {
       performance(canvas, data);
     });
     drawArc(canvas, data);
-
     if (
       data.posX + data.radius > canvas.width || // canvas 우측 화면 닿으면 -방향
       data.posX - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
     ) {
-      dx = -dx; // 방향 반전
+      data.dx = -data.dx; // 방향 반전
     }
     if (
       data.posY + data.radius > canvas.height || // canvas 우측 화면 닿으면 -방향
       data.posY - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
     ) {
-      dy = -dy; // 방향 반전
+      data.dy = -data.dy; // 방향 반전
     }
 
-    data.posX += dx;
-    data.posY += dy;
+    data.posX += data.dx;
+    data.posY += data.dy;
     //stop
     // if (breakpoint) {
     //   cancelAnimationFrame(animationRef);
