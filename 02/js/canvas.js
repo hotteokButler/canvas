@@ -1,3 +1,5 @@
+import { Circle } from './circle.js';
+
 const getRandomInt = (min, max) => {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
@@ -8,34 +10,34 @@ const getRandomInt = (min, max) => {
  * canvas 초기화
  * @param {*} $canvas canvas elem
  */
-const clearCanvas = ($canvas) => {
-  const ctx = $canvas.getContext('2d');
-  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
-};
+// const clearCanvas = ($canvas) => {
+//   const ctx = $canvas.getContext('2d');
+//   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+// };
 
 /**
  * canvas 원 그리기
  * @param {*} $canvas canvas elem
  * @param {*} $arcData 그릴 원 데이터 object
  */
-const drawArc = ($canvas, $arcData) => {
-  const ctx = $canvas.getContext('2d');
-  clearCanvas($canvas);
-  ctx.beginPath();
-  ctx.arc(
-    $arcData.posX ?? 0,
-    $arcData.posY ?? 0,
-    $arcData.radius ?? 50,
-    $arcData.startAngle ?? 0,
-    $arcData.endAngle ?? Math.PI * 2,
-    $arcData.counterClockWise ?? false
-  );
-  ctx.lineWidth = $arcData.lineWidth ?? 1;
-  ctx.strokeStyle = $arcData.color ?? '#232323';
-  ctx.fillStyle = $arcData.color ?? '#232323';
-  ctx.fill();
-  ctx.stroke();
-};
+// const drawArc = ($canvas, $arcData) => {
+//   const ctx = $canvas.getContext('2d');
+//   clearCanvas($canvas);
+//   ctx.beginPath();
+//   ctx.arc(
+//     $arcData.posX ?? 0,
+//     $arcData.posY ?? 0,
+//     $arcData.radius ?? 50,
+//     $arcData.startAngle ?? 0,
+//     $arcData.endAngle ?? Math.PI * 2,
+//     $arcData.counterClockWise ?? false
+//   );
+//   ctx.lineWidth = $arcData.lineWidth ?? 1;
+//   ctx.strokeStyle = $arcData.color ?? '#232323';
+//   ctx.fillStyle = $arcData.color ?? '#232323';
+//   ctx.fill();
+//   ctx.stroke();
+// };
 
 document.addEventListener('DOMContentLoaded', () => {
   const $canvas = document.querySelector('canvas');
@@ -47,38 +49,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // width heignt 설정
   $canvas.width = canvasWidth;
   $canvas.height = canvasHeight;
+  const colorData = [
+    '#012E40',
+    '#024959',
+    '#026773',
+    '#3CA6A6',
+    '#F2E3D5',
+    '#EAF2DC',
+    '#A0A677',
+    '#736F36',
+    '#A67153',
+    '#261201',
+  ];
+  const circleArr = [];
+  const count = 100;
+  const circleRadius = 35;
+  let canvasEventTimer;
 
-  const arcData = {
-    posX: Math.floor(Math.random() * canvasWidth),
-    posY: Math.floor(Math.random() * canvasHeight),
-    radius: 30,
-    color: 'tomato',
-    startAngle: 0,
-    // frame 속도
-    dx: (Math.random() - 0.5) * 12,
-    dy: (Math.random() - 0.5) * 12,
-  };
+  for (let i = 0; i < count; i++) {
+    const arcData = {
+      posX: getRandomInt(0, canvasWidth),
+      posY: getRandomInt(0, canvasHeight),
+      radius: circleRadius,
+      color: colorData[getRandomInt(0, colorData.length - 1)],
+      startAngle: 0,
+      // frame 속도
+      dx: (Math.random() - 0.5) * 5,
+      dy: (Math.random() - 0.5) * 5,
+      globalAlpha : Math.random().toFixed(1),
+    };
+    const cirElem = new Circle($canvas, arcData);
+    circleArr.push(cirElem);
+  }
 
-  const performance = (canvas, data) => {
+  const performance = () => {
     animationRef = requestAnimationFrame(() => {
-      performance(canvas, data);
+      performance();
     });
-    drawArc(canvas, data);
-    if (
-      data.posX + data.radius > canvas.width || // canvas 우측 화면 닿으면 -방향
-      data.posX - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
-    ) {
-      data.dx = -data.dx; // 방향 반전
-    }
-    if (
-      data.posY + data.radius > canvas.height || // canvas 우측 화면 닿으면 -방향
-      data.posY - data.radius < 0 // canvas 좌측 화면 닿으면 +방향
-    ) {
-      data.dy = -data.dy; // 방향 반전
-    }
+    $canvas.getContext('2d').clearRect(0, 0, $canvas.width, $canvas.height); // 초기화
 
-    data.posX += data.dx;
-    data.posY += data.dy;
+    circleArr.forEach((elem) => {
+      elem.updateCircle();
+    });
+
     //stop
     // if (breakpoint) {
     //   cancelAnimationFrame(animationRef);
@@ -86,9 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
   };
 
-  performance($canvas, arcData);
+  performance();
 
-  let canvasEventTimer;
   window.addEventListener('resize', () => {
     clearTimeout(canvasEventTimer);
     cancelAnimationFrame(animationRef);
@@ -98,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       $canvas.width = canvasWidth;
       $canvas.height = canvasHeight;
-      performance($canvas, arcData);
     }, 300);
   });
 });
